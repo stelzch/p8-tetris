@@ -84,15 +84,6 @@ function rotate_array_2d(src)
   return target
 end
 
-function initialize_field()
-  for y=1,field_height do
-    add(field, {})
-    for x=1,field_width do
-      add(field[y], 0)      
-    end
-  end
-end
-
 function test_collision(target_x, target_y, array)
   if target_x < 1 or target_y < 1 then
     return true
@@ -150,89 +141,6 @@ function spawn_piece()
      state = 9
      sfx(2)
   end
-end
-
-function _init()
-  
-end
-
-function draw_block_array(start_x,start_y,array)
-  for y=1,#array do
-    for x=1,#array[1] do
-      field_val = array[y][x]
-
-      if field_val > 0 then
-        screen_x = start_x + (x - 1) * block_size
-        screen_y = start_y + (y - 1) * block_size
-        spr(field_val-1, screen_x, screen_y)
-      end
-    end
-  end
-end
-
-function draw_block_array_clr(
-  start_x,start_y,array,colr)
-  local maxx = 0
-  local maxy = 0
-  for y=1,#array do
-    for x=1,#array[1] do
-      field_val = array[y][x]
-      if field_val > 0 then
-        screen_x = start_x + (x - 1) * block_size
-        screen_y = start_y + (y - 1) * block_size
-        maxx = max(screen_x+5,maxx)
-        maxy = max(screen_y+5,maxy)
-      end
-    end
-  end
-  -- draw an outline
-  rectfill(start_x-2,start_y-2,
-    maxx+1,maxy+2,1)
-  for y=1,#array do
-    for x=1,#array[1] do
-      field_val = array[y][x]
-
-      if field_val > 0 then
-        screen_x = start_x + (x - 1) * block_size
-        screen_y = start_y + (y - 1) * block_size
-        spr(colr-1, screen_x, screen_y)
-      end
-    end
-  end
-
-end
-
-function _draw()
-  -- draw the field on the screen
-  cls()
-  y_offset = 64 - field_height * block_size / 2
-  map(0,0,0,14)
-  map(0,0,0,y_offset+28)
-  start_x = (128 - field_width * block_size) \ 2
-  start_y = (128 - field_height * block_size) \ 2
-
-  if field != nil then
-    draw_block_array(start_x, start_y, field)
-  end
-
-
-  -- draw the current piece
-  if current_piece != nil then
-    draw_block_array(start_x + (current_x - 1)* block_size,
-        start_y + (current_y - 1) * block_size,
-        current_piece)
-  end
-  
-  -- draw the next piece in
-  -- the upper right corner
-  print("upcoming", 95, 20)
-  draw_block_array_clr(100,30,
-    pieces[next_piece],
-    next_color)
-  
-
-  print(debug_msg, 0, 0)
-
 end
 
 function eliminate_full_row()
@@ -325,8 +233,6 @@ function _update()
       current_y += 1
     end
   end
-  
-  --debug_msg = "field has " .. tostr(#field[1])
 end
 
 
@@ -344,8 +250,96 @@ function _init()
   next_color = rnd(num_colors) + 1
   initialize_field()
   spawn_piece()
-  field[field_height][1] = 1
   
+end
+
+function initialize_field()
+  for y=1,field_height do
+    add(field, {})
+    for x=1,field_width do
+      add(field[y], 0)      
+    end
+  end
+end
+-->8
+-- draw code
+
+function _draw()
+  -- draw the field on the screen
+  cls()
+  y_offset = 64 - field_height * block_size / 2
+  map(0,0,0,14)
+  map(0,0,0,y_offset+28)
+  start_x = (128 - field_width * block_size) \ 2
+  start_y = (128 - field_height * block_size) \ 2
+
+  if field != nil then
+    draw_block_array(start_x, start_y, field)
+  end
+
+
+  -- draw the current piece
+  if current_piece != nil then
+    draw_block_array(start_x + (current_x - 1)* block_size,
+        start_y + (current_y - 1) * block_size,
+        current_piece)
+  end
+  
+  -- draw the next piece in
+  -- the upper right corner
+  print("upcoming", 95, 20)
+  draw_block_array_clr(100,30,
+    pieces[next_piece],
+    next_color)
+  
+
+  print(debug_msg, 0, 0)
+end
+
+function draw_block_array(start_x,start_y,array)
+  for y=1,#array do
+    for x=1,#array[1] do
+      field_val = array[y][x]
+
+      if field_val > 0 then
+        screen_x = start_x + (x - 1) * block_size
+        screen_y = start_y + (y - 1) * block_size
+        spr(field_val-1, screen_x, screen_y)
+      end
+    end
+  end
+end
+
+function draw_block_array_clr(
+  start_x,start_y,array,colr)
+  local maxx = 0
+  local maxy = 0
+  for y=1,#array do
+    for x=1,#array[1] do
+      field_val = array[y][x]
+      if field_val > 0 then
+        screen_x = start_x + (x - 1) * block_size
+        screen_y = start_y + (y - 1) * block_size
+        maxx = max(screen_x+5,maxx)
+        maxy = max(screen_y+5,maxy)
+      end
+    end
+  end
+  -- draw an outline
+  rectfill(start_x-2,start_y-2,
+    maxx+1,maxy+2,1)
+  for y=1,#array do
+    for x=1,#array[1] do
+      field_val = array[y][x]
+
+      if field_val > 0 then
+        screen_x = start_x + (x - 1) * block_size
+        screen_y = start_y + (y - 1) * block_size
+        spr(colr-1, screen_x, screen_y)
+      end
+    end
+  end
+
 end
 __gfx__
 99999000666660008888800033333000666666666666556006556666000600000000000000000000000000000000000000000000000000000000000000000000
